@@ -1,0 +1,169 @@
+<!-- Page Wrapper -->
+			<div id="page-wrapper">
+
+				<!-- Wrapper -->
+					<div id="wrapper">
+
+						<!-- Panel (Banner) -->
+							<section class="panel banner right">
+								<div class="content color0 span-3-75">
+									<h1 class="major">Hola, mi nombre<br />
+									es Karina</h1>
+									<p>Este es mi proyecto. Soy <strong>Fotografa</strong> y aquí subiré mis trabajos y aventuras de viajes y sueños cumplidos. Se parte de esta comunidad, comenta y hazme saber cuál es tu foto favorita </p>
+									<ul class="actions">
+										<li><a href="#first"><i class="fa-solid fa-circle-arrow-right fa-2xl"></i></a></li>
+									</ul>
+								</div>
+								<div class="image filtered span-1-75" data-position="25% 25%">
+									<img src="https://images.unsplash.com/photo-1482361046637-0226fdcfa3b7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="" />
+								</div>
+							</section>
+
+						<!-- Panel (Spotlight) -->
+							<section class="panel spotlight medium right" id="first">
+								<div class="content span-7">
+
+									<% if user_signed_in? %>
+										<!-- Mostrar los datos del usuario -->
+										<div class="card w-50">
+											<div class="card-body text-center">
+												<h5 class="card-title">Bienvenid@ <%= current_user.name %> !</h5>
+												<% if current_user.profile_picture.present? %>
+													<%= image_tag current_user.profile_picture, class:"profile_img rounded-circle" %>
+													<% else %>
+													<!-- Mostrar una imagen predeterminada o un mensaje si el usuario no tiene imagen de perfil -->
+													<%= image_tag 'default.svg.png', class:"profile_img" %> <!-- Cambia 'default_profile_picture.png' por tu imagen predeterminada si la tienes -->
+													<% end %>
+												<p class="card-text"><p>Tu email registrado es: <%= current_user.email %></p></p>
+												<!-- Botón para cerrar sesión -->
+												<%= button_to "Cerrar sesión", destroy_user_session_path, method: :delete, class:"btn btn-secondary" %>
+											</div>
+										</div>
+                                        
+                                        <% else %>
+                                        <!-- Formulario de registro e inicio de sesión aquí -->
+                                        <div id="registroForm">
+                                            <h2 class="major">Registro</h2>
+                                            <button id="alternarFormularios">Si ya tienes cuenta, inicia sesión aquí</button>
+
+                                            <%= form_for(@user, url: registration_path(@user)) do |f| %>
+                                                <%= render "devise/shared/error_messages", resource: @user %>
+
+                                                <div class="field">
+                                                    <%= f.label :Nombre %>
+                                                    <%= f.text_field :name, autofocus: true, autocomplete: "name" %>
+                                                </div>
+
+                                                <div class="field">
+                                                    <%= f.label :Email %>
+                                                    <%= f.email_field :email, autofocus: true, autocomplete: "email" %>
+                                                </div>
+
+                                                <div class="field">
+                                                    <%= f.label :Password %>
+                                                    <% if @minimum_password_length %>
+                                                    <em>(<%= @minimum_password_length %> characters minimum)</em>
+                                                    <% end %>
+                                                    <%= f.password_field :password, autocomplete: "new-password" %>
+                                                </div>
+
+                                                <div class="field">
+                                                    <%= f.label :Confirnar_password %>
+                                                    <%= f.password_field :password_confirmation, autocomplete: "new-password" %>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <%= f.label :profile_picture%>
+                                                    <%= f.file_field :profile_picture, multiple: false, class: 'form-control' %>
+                                                </div>
+                                                
+                                                <div class="actions">
+                                                    <%= f.submit "Sign up" %>
+                                                </div>
+                                            <% end %>
+                                        </div>
+                                        <div id="inicioSesionForm" style="display: none;">
+                                            <h2 class="major">Iniciar sesión</h2>
+                                            <button id="volverARegistro">Si aún no tienes cuenta, Registrate aquí</button>
+
+                                            <%= form_for(@user, url: session_path(@user)) do |f| %>
+												<% if flash[:alert].present? %>
+													<div class="alert alert-warning">
+													<%= flash[:alert] %>
+													</div>
+												<% end %>
+
+                                                <div class="field">
+                                                    <%= f.label :email %>
+                                                    <%= f.email_field :email, autofocus: true, autocomplete: "email" %>
+                                                </div>
+                                                
+                                                <div class="field">
+                                                    <%= f.label :password %>
+                                                    <%= f.password_field :password, autocomplete: "current-password" %>
+                                                </div>
+                                                
+                                                <div class="actions">
+                                                    <%= f.submit "Log in" %>
+                                                </div>
+                                            <% end %>
+                                        </div>
+                                    <% end %>
+                                        
+								</div>
+                                
+
+								<div class="image filtered tinted" data-position="top left">
+									<img src="https://picsum.photos/600" alt="" />
+								</div>
+							</section>
+
+						<!-- Panel -->
+							<section class="panel">
+							<% if user_signed_in? %>
+								<div class="intro color2">
+									<% if current_user.is_owner %>
+										<!-- Mostrar formulario de carga de fotos solo si el usuario logueado es Karina -->
+										<h2 class="major">Karina, sube tu próxima foto</h2>
+										<%= form_for Photo.new, url: photos_path, html: { multipart: true } do |f| %>
+											<div class="field mb-2">
+												<%= f.label :titulo %>
+												<%= f.text_field :title %>
+											</div>
+										
+											<div class="field mb-2">
+												<%= f.label :descripcion %>
+												<%= f.text_area :description %>
+											</div>
+										
+											<div class="field mb-2">
+												<%= f.label :imagen %>
+												<%= f.file_field :image %>
+											</div>
+										
+											<%= f.submit "Subir Foto", class:"mt-2" %>
+										<% end %>
+									<% else %>
+									<div class="intro color2">
+										<h2 class="major"> Así veo la vida a través del lente.</h2>
+										<p>“La fotografía es el arte de observar. Se trata de encontrar algo interesante en un lugar ordinario. Tiene poco que ver con las cosas que ves y mucho que ver con cómo las ves”. - Elliott Erwitt.</p>
+									</div>
+									<% end %>
+								</div>
+							<%else%>
+							<div class="intro color2">
+								<h2 class="major"> Inicia sesión para comentar las fotos de karina</h2>
+								<p>Este es un espacio para compartir tus puntos de vista y maravillarte con imagenes espectaculares.</p>
+							</div>
+							<% end %>
+								<div class="gallery">
+									<% @karina_photos.each do |photo| %>
+										<a href="/photos/<%= photo.id %>">
+											<%= image_tag rails_blob_path(photo.image, only_path: true), class:"photo filtered" %>
+										</a>
+									<% end %>
+								</div>
+							</section>
+					</div>
+
+			</div>

@@ -1,0 +1,74 @@
+<div id="page-wrapper">
+
+<!-- Wrapper -->
+    <div id="wrapper">
+
+        <!-- Panel (Spotlight) -->
+            <section class="panel spotlight large left">
+                <div class="content span-5">
+                    <h2 class="major"><%= @photo.title %></h2>
+                    <p><%= @photo.description %></p>
+                </div>
+                <div class="image filtered tinted" data-position="top right">
+                    <%= image_tag rails_blob_path(@photo.image) %>
+                </div>
+            </section>
+            <section class="panel color2-alt">
+                    <div class="inner columns aligned">
+                        <div class="span-3">
+                            <h3 class="major">Comentarios</h3>
+                            <div class="table-wrapper">
+                                <table>
+                                    <tbody>
+                                    
+
+                                    <% @photo.comments.each do |comment| %>
+                                        <tr class="comment">
+                                            <% if comment.user.present? %>
+                                            <% if comment.user.profile_picture.present? %>
+                                                <td><%= image_tag comment.user.profile_picture, class: "profile_img rounded-circle" %></td>
+                                            <% else %>
+                                                <!-- Mostrar una imagen predeterminada o un mensaje si el usuario no tiene imagen de perfil -->
+                                                <td><%= image_tag 'default.svg.png', class: "profile-small" %></td> 
+                                            <% end %>
+                                            <td><strong><%= comment.user.name %>:</strong> </td>
+                                            <% else %>
+                                            <!-- Manejo adicional si el usuario no está presente -->
+                                            <td>Usuario eliminado</td>
+                                            <% end %>
+                                            <td><%= comment.content %></td>
+                                            <td><em>Publicado el <%= comment.created_at.strftime("%d/%m/%Y a las %H:%M") %></em></td>
+                                        </tr>
+                                    <% end %>
+                                        
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="span-3">
+                            
+                            <div class="table-wrapper">
+                            <% if user_signed_in? %>
+                                <%= form_for [@photo, Comment.new] do |f| %>
+                                    <h4> Bienvenidos <%= current_user.name %>, sientete libre de dejar un comentario en mis fotos:</h4>
+                                    <div class="field">
+                                    <%= f.label :content, "Comentar:" %>
+                                    <%= f.text_area :content %>
+                                    </div>
+                                    <div class="actions">
+                                    <%= f.submit "Postear Comentario" %>
+                                    </div>
+                                <% end %>
+                            <% else%>
+                            <a href= />
+                            <h4>Inicia sesion para dejar un comentario</h4>
+                            </a>
+                            
+                            <% end %>
+
+                            </div>
+                        </div>
+                    </div>
+                </section>
+        </div>
+    </div>
